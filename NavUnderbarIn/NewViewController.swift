@@ -19,7 +19,7 @@ class NewViewController: B32UnderViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        underLabelText = "Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello world "
+//        underLabelText = "Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello world "
         
         tableView.delegate = self
         tableView.dataSource = self

@@ -72,9 +72,39 @@ class B32UnderViewController: UIViewController {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.setHideShadowView(true)
+        
+        if firstAppearance {
+            firstAppearance = false
+            
+            if let underLabelText = underLabelText, let uLabel = underLabel {
+                uLabel.text = underLabelText
+            }
+            
+            underView.layoutIfNeeded()
+            
+            let underViewHeight = underView.frame.height
+            let standartNavigationBarHeight = getStandartNavigationBarHeight()
+            
+            underviewHeightDefault = underViewHeight
+            scrollViewInsetDefault = standartNavigationBarHeight + underviewHeightDefault
+            
+            let edgeInsets = UIEdgeInsetsMake(scrollViewInsetDefault, 0, 0, 0)
+            
+            scrollUnderView.contentInset = edgeInsets
+            scrollUnderView.scrollIndicatorInsets = edgeInsets
+            
+            scrollUnderView.setContentOffset(CGPoint(x: 0, y: -1.0 * scrollViewInsetDefault), animated: false)
+            
+        }
+    }
 
     override func viewDidAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        super.viewDidAppear(animated)
         
         navigationController?.delegate = self
     }
@@ -102,37 +132,6 @@ class B32UnderViewController: UIViewController {
         let navBarHeight = (navigationController?.navigationBar.bounds.height ?? 0)
         
         return statusBarHeight + navBarHeight
-    }
-
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        navigationController?.navigationBar.setHideShadowView(true)
-        
-        if firstAppearance {
-            firstAppearance = false
-            
-            if let underLabelText = underLabelText, let uLabel = underLabel {
-                uLabel.text = underLabelText
-            }
-            
-            underView.layoutIfNeeded()
-
-            let underViewHeight = underView.frame.height
-            let standartNavigationBarHeight = getStandartNavigationBarHeight()
-
-            underviewHeightDefault = underViewHeight
-            scrollViewInsetDefault = standartNavigationBarHeight + underviewHeightDefault
-            
-            let edgeInsets = UIEdgeInsetsMake(scrollViewInsetDefault, 0, 0, 0)
-            
-            scrollUnderView.contentInset = edgeInsets
-            scrollUnderView.scrollIndicatorInsets = edgeInsets
-            
-            scrollUnderView.setContentOffset(CGPoint(x: 0, y: -1.0 * scrollViewInsetDefault), animated: false)
-            
-        }
     }
     
     func recalcUnderViewPropertiesIfOrientationChanged() {
@@ -555,8 +554,6 @@ class B32UnderViewControllerAnimator : NSObject, UIViewControllerAnimatedTransit
 
             let fromVCUnderviewDefaultHeight: CGFloat = fromVC.underviewHeightDefault
             let toNavVCUnderviewDefaultHeight: CGFloat = toNavVC.underviewHeightDefault!
-            
-            print("fromVCUnderviewDefaultHeight: \(fromVCUnderviewDefaultHeight), toNavVCUnderviewDefaultHeight: \(toNavVCUnderviewDefaultHeight)")
             
             if (fromVCUnderviewDefaultHeight > toNavVCUnderviewDefaultHeight) {
                 // 1
