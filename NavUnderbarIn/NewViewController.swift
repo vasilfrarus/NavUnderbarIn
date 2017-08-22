@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  NewViewController.swift
 //  NavUnderbarIn
 //
 //  Created by Admin on 22/08/2017.
@@ -8,8 +8,8 @@
 
 import UIKit
 
-class ViewController: B32UnderViewController {
-
+class NewViewController: B32UnderViewController {
+    
     var cellColor: [Int] = []
     var cellHeight: [CGFloat] = []
     
@@ -20,7 +20,7 @@ class ViewController: B32UnderViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         underLabelText = "Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello world "
-
+        
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -30,14 +30,15 @@ class ViewController: B32UnderViewController {
         }
         
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
 }
 
-extension ViewController : UITableViewDataSource {
+extension NewViewController : UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return tableView.dequeueReusableCell(withIdentifier: "TableCell\(cellColor[indexPath.row])")!
@@ -50,13 +51,12 @@ extension ViewController : UITableViewDataSource {
 }
 
 
-extension ViewController : UITableViewDelegate {
+extension NewViewController : UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let newVC = (storyboard.instantiateViewController(withIdentifier: arc4random_uniform(2) == 0 ? "SecondVC" : "NewController") as! B32UnderViewController)
         self.navigationController?.pushViewController(newVC, animated: true)
-        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

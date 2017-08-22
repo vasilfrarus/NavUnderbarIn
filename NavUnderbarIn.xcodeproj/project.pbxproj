@@ -12,9 +12,10 @@
 		845F1FC81F4C48F7003A0855 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 845F1FC61F4C48F7003A0855 /* Main.storyboard */; };
 		845F1FCA1F4C48F7003A0855 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 845F1FC91F4C48F7003A0855 /* Assets.xcassets */; };
 		845F1FCD1F4C48F7003A0855 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 845F1FCB1F4C48F7003A0855 /* LaunchScreen.storyboard */; };
-		845F1FD51F4C4953003A0855 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845F1FD41F4C4953003A0855 /* SecondViewController.swift */; };
 		845F1FD81F4C4A7E003A0855 /* B32UnderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845F1FD61F4C4A7E003A0855 /* B32UnderView.swift */; };
-		845F1FD91F4C4A7E003A0855 /* UINavigationBar+setHideNavigationBarShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845F1FD71F4C4A7E003A0855 /* UINavigationBar+setHideNavigationBarShadowView.swift */; };
+		84F7559D1F4C7E8700144FB2 /* NewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F7559C1F4C7E8700144FB2 /* NewViewController.swift */; };
+		84F7559F1F4C83B100144FB2 /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F7559E1F4C83B100144FB2 /* StartViewController.swift */; };
+		84F755A11F4C94C900144FB2 /* B32UnderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F755A01F4C94C900144FB2 /* B32UnderViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,9 +26,10 @@
 		845F1FC91F4C48F7003A0855 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		845F1FCC1F4C48F7003A0855 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		845F1FCE1F4C48F7003A0855 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		845F1FD41F4C4953003A0855 /* SecondViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 		845F1FD61F4C4A7E003A0855 /* B32UnderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = B32UnderView.swift; sourceTree = "<group>"; };
-		845F1FD71F4C4A7E003A0855 /* UINavigationBar+setHideNavigationBarShadowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+setHideNavigationBarShadowView.swift"; sourceTree = "<group>"; };
+		84F7559C1F4C7E8700144FB2 /* NewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewViewController.swift; sourceTree = "<group>"; };
+		84F7559E1F4C83B100144FB2 /* StartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		84F755A01F4C94C900144FB2 /* B32UnderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = B32UnderViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,10 +63,11 @@
 			isa = PBXGroup;
 			children = (
 				845F1FC21F4C48F7003A0855 /* AppDelegate.swift */,
+				84F7559E1F4C83B100144FB2 /* StartViewController.swift */,
 				845F1FC41F4C48F7003A0855 /* ViewController.swift */,
-				845F1FD41F4C4953003A0855 /* SecondViewController.swift */,
+				84F7559C1F4C7E8700144FB2 /* NewViewController.swift */,
+				84F755A01F4C94C900144FB2 /* B32UnderViewController.swift */,
 				845F1FD61F4C4A7E003A0855 /* B32UnderView.swift */,
-				845F1FD71F4C4A7E003A0855 /* UINavigationBar+setHideNavigationBarShadowView.swift */,
 				845F1FC61F4C48F7003A0855 /* Main.storyboard */,
 				845F1FC91F4C48F7003A0855 /* Assets.xcassets */,
 				845F1FCB1F4C48F7003A0855 /* LaunchScreen.storyboard */,
@@ -146,9 +149,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				845F1FD91F4C4A7E003A0855 /* UINavigationBar+setHideNavigationBarShadowView.swift in Sources */,
-				845F1FD51F4C4953003A0855 /* SecondViewController.swift in Sources */,
+				84F7559F1F4C83B100144FB2 /* StartViewController.swift in Sources */,
 				845F1FD81F4C4A7E003A0855 /* B32UnderView.swift in Sources */,
+				84F7559D1F4C7E8700144FB2 /* NewViewController.swift in Sources */,
+				84F755A11F4C94C900144FB2 /* B32UnderViewController.swift in Sources */,
 				845F1FC51F4C48F7003A0855 /* ViewController.swift in Sources */,
 				845F1FC31F4C48F7003A0855 /* AppDelegate.swift in Sources */,
 			);
@@ -316,6 +320,7 @@
 				845F1FD31F4C48F7003A0855 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -1,8 +1,8 @@
 //
-//  SecondViewController.swift
+//  B32UnderViewController.swift
 //  NavUnderView
 //
-//  Created by Admin on 09/08/2017.
+//  Created by Vasiliy Fedotov on 09/08/2017.
 //  Copyright © 2017 1C Rarus. All rights reserved.
 //
 
@@ -16,7 +16,8 @@ fileprivate enum B32UnderviewStatus {
     case shownFully
 }
 
-class SecondViewController: UIViewController {
+@IBDesignable
+class B32UnderViewController: UIViewController {
 
     fileprivate static var transitionIsOn: Bool = false
     
@@ -24,6 +25,7 @@ class SecondViewController: UIViewController {
     fileprivate var swipeToBackInteractor : UIPercentDrivenInteractiveTransition?
 
     @IBOutlet public weak var scrollUnderView: UIScrollView!
+    @IBOutlet public weak var additionalView: UIView?
     
     fileprivate var underView: B32UnderView!
     private var orientationChanged: Bool = false
@@ -33,17 +35,22 @@ class SecondViewController: UIViewController {
     
     fileprivate var underviewHeightConstraint: NSLayoutConstraint!
     fileprivate static let underviewCollapsedHeight: CGFloat = 0.5
-    fileprivate var underviewHeightConstraintConstantDefault: CGFloat = 100
+    fileprivate var underviewHeightConstraintConstantDefault: CGFloat = 10000
+    @IBInspectable fileprivate var underlabelNumberOfLines: Int = 4
     fileprivate var underviewHeightDefault: CGFloat!
     fileprivate var scrollViewInsetDefault: CGFloat!
     
-    fileprivate var underLabel: UILabel! {
-        return underView.label
+    fileprivate var underLabel: UILabel? {
+        return (underView.underview as? UILabel)
+    }
+    
+    fileprivate var innerUnderview: UIView! {
+        return underView.underview
     }
     
     public var underLabelText: String?
     
-    fileprivate static let animator = SecondViewControllerAnimator()
+    fileprivate static let animator = B32UnderViewControllerAnimator()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,8 +112,8 @@ class SecondViewController: UIViewController {
         if firstAppearance {
             firstAppearance = false
             
-            if let underLabelText = underLabelText {
-                underLabel.text = underLabelText
+            if let underLabelText = underLabelText, let uLabel = underLabel {
+                uLabel.text = underLabelText
             }
             
             underView.layoutIfNeeded()
@@ -154,10 +161,6 @@ class SecondViewController: UIViewController {
         
         let oldStandartNavigationBarHeight = oldScrollViewInsetDefault - oldUnderviewHeightDefault
         
-        let standartNavigationBarDiff = oldStandartNavigationBarHeight - standartNavigationBarHeight
-        let underviewHeightDiff = oldUnderviewHeightDefault - underviewHeightDefault
-        let navBarDiff = (standartNavigationBarDiff + underviewHeightDiff)
-        
         if (oldScrollViewInsetDefault != -1.0 * oldScrollViewOffset)
         {
             let additional = oldStandartNavigationBarHeight + oldScrollViewOffset
@@ -180,7 +183,7 @@ class SecondViewController: UIViewController {
     }
     
     func createUnderView() {
-        underView = B32UnderView()
+        underView = B32UnderView(withCustomView: additionalView)
         
         view.addSubview(underView)
         
@@ -191,17 +194,17 @@ class SecondViewController: UIViewController {
         
         underviewHeightConstraint = underView.heightAnchor.constraint(lessThanOrEqualToConstant: underviewHeightConstraintConstantDefault)
         
-        underView.label.numberOfLines = 4
+        underLabel?.numberOfLines = underlabelNumberOfLines
         
         underviewHeightConstraint.isActive = true
     }
     
     func rewindScrollView(animated: Bool) {
         let actualHeight = underviewHeightConstraint.constant
-        guard actualHeight > SecondViewController.underviewCollapsedHeight && actualHeight < underviewHeightDefault  else { return }
+        guard actualHeight > B32UnderViewController.underviewCollapsedHeight && actualHeight < underviewHeightDefault  else { return }
         
         let scrollToTop = actualHeight < underviewHeightDefault/2.0
-        underviewHeightConstraint.constant = scrollToTop ? SecondViewController.underviewCollapsedHeight : underviewHeightDefault
+        underviewHeightConstraint.constant = scrollToTop ? B32UnderViewController.underviewCollapsedHeight : underviewHeightDefault
         
         if animated {
             UIView.animate(withDuration: 0.25, animations: { [weak self] in
@@ -228,7 +231,7 @@ class SecondViewController: UIViewController {
         switch gestureRecognizer.state {
             
         case .began:
-            SecondViewController.transitionIsOn = true
+            B32UnderViewController.transitionIsOn = true
             
             swipeToBackInteractor = UIPercentDrivenInteractiveTransition()
             
@@ -247,7 +250,7 @@ class SecondViewController: UIViewController {
             }
             
             swipeToBackInteractor = nil
-            SecondViewController.transitionIsOn = false
+            B32UnderViewController.transitionIsOn = false
             
         default:
             print("Swift switch must be exhaustive, thus the default")
@@ -256,12 +259,12 @@ class SecondViewController: UIViewController {
     
 }
 
-extension SecondViewController : UINavigationControllerDelegate {
+extension B32UnderViewController : UINavigationControllerDelegate {
 
     func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         
         if operation == .pop {
-            return SecondViewController.animator
+            return B32UnderViewController.animator
         }
         
         return nil
@@ -273,12 +276,12 @@ extension SecondViewController : UINavigationControllerDelegate {
     
 }
 
-extension SecondViewController : UIScrollViewDelegate {
+extension B32UnderViewController : UIScrollViewDelegate {
     
     fileprivate func getUnderviewStatus() -> B32UnderviewStatus {
         let underviewHeight = underView.bounds.height
         
-        if underviewHeight <= SecondViewController.underviewCollapsedHeight {
+        if underviewHeight <= B32UnderViewController.underviewCollapsedHeight {
             return .hidden
         } else if underviewHeight >= underviewHeightDefault {
             return .shownFully
@@ -290,7 +293,7 @@ extension SecondViewController : UIScrollViewDelegate {
     
     fileprivate func setTitleBarShown(_ shown: Bool, animated: Bool = true) {
 
-        navigationItem.title = underLabel.text ?? navItemPlaceHolder
+        navigationItem.title = underLabel?.text ?? navItemPlaceHolder
         
         if let label = navigationController?.navigationBar.getTitleLabel() {
             
@@ -334,11 +337,11 @@ extension SecondViewController : UIScrollViewDelegate {
         
         let yoffset = scrollUnderView.contentOffset.y + navStatusHeight
         
-        underviewHeightConstraint.constant = (yoffset >= 0.0) ? SecondViewController.underviewCollapsedHeight : abs(yoffset)
+        underviewHeightConstraint.constant = (yoffset >= 0.0) ? B32UnderViewController.underviewCollapsedHeight : abs(yoffset)
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard !SecondViewController.transitionIsOn else { return } // do not work at transition
+        guard !B32UnderViewController.transitionIsOn else { return } // do not work at transition
         
         recalcUnderviewHeightConstraint()
         
@@ -346,17 +349,18 @@ extension SecondViewController : UIScrollViewDelegate {
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        guard !SecondViewController.transitionIsOn else { return } // do not work at transition
+        guard !B32UnderViewController.transitionIsOn else { return } // do not work at transition
         rewindScrollView(animated: true)
     }
 }
 
 
 
+
 //-----
 
 
-class SecondViewControllerAnimator : NSObject, UIViewControllerAnimatedTransitioning {
+class B32UnderViewControllerAnimator : NSObject, UIViewControllerAnimatedTransitioning {
     
     static var transitionNavUnderView: B32UnderView?
     static var anotherTransitionNavUnderView: B32UnderView?
@@ -364,11 +368,11 @@ class SecondViewControllerAnimator : NSObject, UIViewControllerAnimatedTransitio
     override init() {
         super.init()
         
-        if SecondViewControllerAnimator.transitionNavUnderView == nil ||
-            SecondViewControllerAnimator.anotherTransitionNavUnderView == nil {
+        if B32UnderViewControllerAnimator.transitionNavUnderView == nil ||
+            B32UnderViewControllerAnimator.anotherTransitionNavUnderView == nil {
             
-            SecondViewControllerAnimator.transitionNavUnderView = B32UnderView()
-            SecondViewControllerAnimator.anotherTransitionNavUnderView = B32UnderView()
+            B32UnderViewControllerAnimator.transitionNavUnderView = B32UnderView()
+            B32UnderViewControllerAnimator.anotherTransitionNavUnderView = B32UnderView()
         }
         
     }
@@ -384,14 +388,14 @@ class SecondViewControllerAnimator : NSObject, UIViewControllerAnimatedTransitio
         
         let containerView = transitionContext.containerView
         
-        guard let fromVC = transitionContext.viewController(forKey: .from)  as? SecondViewController else { return }
+        guard let fromVC = transitionContext.viewController(forKey: .from)  as? B32UnderViewController else { return }
         guard let toVC = transitionContext.viewController(forKey: .to) else { return }
         
         guard let toView = transitionContext.view(forKey: .to) else { return }
         guard let fromView = transitionContext.view(forKey: .from) else { return }
         
         let transitionToNoNavBar = (toVC.navigationController == nil)
-        let transitionToStandardNavBar = !(toVC is SecondViewController)
+        let transitionToStandardNavBar = !(toVC is B32UnderViewController)
         
         let finalFrameTo : CGRect = transitionContext.finalFrame(for: toVC)
         let offsetFrame : CGRect = finalFrameTo.offsetBy(dx: UIScreen.main.bounds.width, dy: 0)
@@ -408,16 +412,16 @@ class SecondViewControllerAnimator : NSObject, UIViewControllerAnimatedTransitio
         let fromVCUnderView = fromVC.underView!
         let fromVCUnderViewHeight = fromVCUnderView.bounds.height
         
-        let fromVCUnderLabel = fromVC.underLabel!
+        let fromVCUnderLabel = fromVC.innerUnderview!
         
         let fromVCScrollView = fromVC.scrollUnderView!
         let fromVCScrollViewContentOffset = fromVCScrollView.contentOffset.y
         
-        let transitionNavUnderView = SecondViewControllerAnimator.transitionNavUnderView!
+        let transitionNavUnderView = B32UnderViewControllerAnimator.transitionNavUnderView!
         transitionNavUnderView.frame = fromVCUnderView.frame
         transitionNavUnderView.layoutIfNeeded()
         
-        let underviewCollapsedHeight = SecondViewController.underviewCollapsedHeight
+        let underviewCollapsedHeight = B32UnderViewController.underviewCollapsedHeight
         
         // animation to VC without NavigationController
         let animateToNoNavigationBarViewController = {
@@ -437,7 +441,7 @@ class SecondViewControllerAnimator : NSObject, UIViewControllerAnimatedTransitio
             
             fromVCHeightConstraint!.constant = underviewCollapsedHeight
             
-            let toNavVCScrollView: UIScrollView? = collapsed ? (toVC as! SecondViewController).scrollUnderView : nil
+            let toNavVCScrollView: UIScrollView? = collapsed ? (toVC as! B32UnderViewController).scrollUnderView : nil
             let toNavVCScrollViewOffset: CGFloat? = collapsed ? toNavVCScrollView!.contentOffset.y : nil
             if collapsed {
                 let transitionNavUnderViewHeight = transitionNavUnderView.frame.height
@@ -482,14 +486,14 @@ class SecondViewControllerAnimator : NSObject, UIViewControllerAnimatedTransitio
         }
         
         
-        // animation to VC with SecondViewController NavigationController
+        // animation to VC with B32UnderViewController NavigationController
         let animateToCustomNavigationBarViewController = {
 
-            let toNavVC = toVC as! SecondViewController
+            let toNavVC = toVC as! B32UnderViewController
             
             let toNavVCUnderView = toNavVC.underView!
             let toNavVCUnderViewHeight = toNavVCUnderView.bounds.height
-            let toNavVCUnderLabel = toNavVC.underLabel!
+            let toNavVCUnderLabel = toNavVC.innerUnderview!
             
             let toNavVCScrollView = toNavVC.scrollUnderView!
             
@@ -510,7 +514,7 @@ class SecondViewControllerAnimator : NSObject, UIViewControllerAnimatedTransitio
                 
                 // fromView preparation
                 fromVCHeightConstraint!.constant = toNavVCUnderViewHeight
-                fromVC.underLabel.isHidden = (fromVCUnderViewHeight == underviewCollapsedHeight)
+                fromVC.innerUnderview.isHidden = (fromVCUnderViewHeight == underviewCollapsedHeight)
                 
                 let fromVCCurrentContentOffset = fromVCScrollView.contentOffset.y
                 let fromVCContentOffsetDiff = toNavVCUnderViewHeight - fromVCUnderViewHeight
@@ -561,7 +565,7 @@ class SecondViewControllerAnimator : NSObject, UIViewControllerAnimatedTransitio
                 }, completion: { result in
                     // fromView restoration
                     fromVCScrollView.contentOffset.y = fromVCCurrentContentOffset
-                    fromVC.underLabel.isHidden = false
+                    fromVC.innerUnderview.isHidden = false
                     fromVCHeightConstraint!.constant = fromVCHeightConstraintConst
                     fromVCUnderLabel.alpha = 1
                     
@@ -603,7 +607,7 @@ class SecondViewControllerAnimator : NSObject, UIViewControllerAnimatedTransitio
                 }
                 
                 // toView preparation
-                let anotherTransitionNavUnderView = SecondViewControllerAnimator.anotherTransitionNavUnderView!
+                let anotherTransitionNavUnderView = B32UnderViewControllerAnimator.anotherTransitionNavUnderView!
                 anotherTransitionNavUnderView.frame = transitionNavUnderView.frame
                 anotherTransitionNavUnderView.layoutIfNeeded()
                 toView.addSubview(anotherTransitionNavUnderView)
@@ -689,5 +693,52 @@ class SecondViewControllerAnimator : NSObject, UIViewControllerAnimatedTransitio
     
 }
 
+// -- 
+
+extension UINavigationBar {
+    
+    private func findTitleLabel(under view: UIView) -> UILabel? {
+        
+        if view is UILabel, let superview = view.superview, NSStringFromClass(type(of: superview)) == "UINavigationItemView" {
+            return (view as! UILabel)
+        }
+        
+        for subview in view.subviews {
+            if let label = findTitleLabel(under: subview) {
+                return label
+            }
+        }
+        
+        return nil
+    }
+    
+    
+    func getTitleLabel() -> UILabel? {
+        return findTitleLabel(under: self)
+    }
+    
+    
+    private func findShadowImage(under view: UIView) -> UIImageView? {
+        
+        if view is UIImageView && view.bounds.size.height <= 3 {
+            return (view as! UIImageView)
+        }
+        
+        for subview in view.subviews {
+            if let imageView = findShadowImage(under: subview) {
+                return imageView
+            }
+        }
+        
+        return nil
+    }
+    
+    func setHideShadowView(_ hide: Bool) {
+        if let view = findShadowImage(under: self) {
+            view.isHidden = hide
+        }
+    }
+    
+}
 
 
