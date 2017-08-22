@@ -1,6 +1,5 @@
 //
 //  B32UnderViewController.swift
-//  NavUnderView
 //
 //  Created by Vasiliy Fedotov on 09/08/2017.
 //  Copyright © 2017 1C Rarus. All rights reserved.
@@ -26,6 +25,8 @@ class B32UnderViewController: UIViewController {
 
     @IBOutlet public weak var scrollUnderView: UIScrollView!
     @IBOutlet public weak var additionalView: UIView?
+    
+    weak open var scrollViewDelegate: UIScrollViewDelegate?
     
     fileprivate var underView: B32UnderView!
     private var orientationChanged: Bool = false
@@ -341,6 +342,7 @@ extension B32UnderViewController : UIScrollViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollViewDelegate?.scrollViewDidScroll?(scrollView)
         guard !B32UnderViewController.transitionIsOn else { return } // do not work at transition
         
         recalcUnderviewHeightConstraint()
@@ -349,9 +351,57 @@ extension B32UnderViewController : UIScrollViewDelegate {
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        scrollViewDelegate?.scrollViewDidEndDragging?(scrollView, willDecelerate: decelerate)
         guard !B32UnderViewController.transitionIsOn else { return } // do not work at transition
         rewindScrollView(animated: true)
     }
+    
+    
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        scrollViewDelegate?.scrollViewDidZoom?(scrollView)
+    }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        scrollViewDelegate?.scrollViewWillBeginDragging?(scrollView)
+        
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        scrollViewDelegate?.scrollViewWillEndDragging?(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
+    }
+    
+    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+        scrollViewDelegate?.scrollViewWillBeginDecelerating?(scrollView)
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        scrollViewDelegate?.scrollViewDidEndDecelerating?(scrollView)
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        scrollViewDelegate?.scrollViewDidEndScrollingAnimation?(scrollView)
+    }
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return scrollViewDelegate?.viewForZooming?(in: scrollView)
+    }
+    
+    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        scrollViewDelegate?.scrollViewWillBeginZooming?(scrollView, with: view)
+    }
+    
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        scrollViewDelegate?.scrollViewDidEndZooming?(scrollView, with: view, atScale: scale)
+    }
+    
+    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+        return (scrollViewDelegate?.scrollViewShouldScrollToTop?(scrollView) ?? false)
+    }
+    
+    func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+        scrollViewDelegate?.scrollViewDidScrollToTop?(scrollView)
+    }
+
 }
 
 
