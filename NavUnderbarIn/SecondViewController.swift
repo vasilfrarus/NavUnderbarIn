@@ -23,11 +23,7 @@ class SecondViewController: UIViewController {
     private var screenEdgePanGestureRecognizer: UIScreenEdgePanGestureRecognizer!
     fileprivate var swipeToBackInteractor : UIPercentDrivenInteractiveTransition?
 
-    @IBOutlet fileprivate weak var scrollView: UIScrollView!
-    
-    fileprivate var scrollUnderView: UIScrollView! {
-        return scrollView
-    }
+    @IBOutlet public weak var scrollUnderView: UIScrollView!
     
     fileprivate var underView: B32UnderView!
     private var orientationChanged: Bool = false
@@ -49,34 +45,18 @@ class SecondViewController: UIViewController {
     
     fileprivate static let animator = SecondViewControllerAnimator()
     
-    
-    var cellColor: [Int] = []
-    var cellHeight: [CGFloat] = []
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationController?.view.backgroundColor = UIColor.white
         
+        automaticallyAdjustsScrollViewInsets = false
+        
         installGestureRecognizer()
 
         createUnderView()
+        
         underView.barTintColor = navigationController?.navigationBar.barTintColor
-        if let underLabelText = underLabelText {
-            underLabel.text = underLabelText
-        }
-        underView.layoutIfNeeded()
-        
-
-        
-        scrollUnderView.delegate = self
-        (scrollUnderView as! UITableView).dataSource = self
-        
-        
-        for i in 0..<20 {
-            cellColor.append(Int(arc4random_uniform(3)+1))
-            cellHeight.append(CGFloat(arc4random_uniform(40)+30))
-        }
         
         NotificationCenter.default.addObserver(self, selector: #selector(didRotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
@@ -104,14 +84,9 @@ class SecondViewController: UIViewController {
         underviewHeightConstraint.constant = underviewHeightConstraintConstantDefault
         
         if (isViewLoaded && view.window != nil) {
-            print("Rotated visible")
-            
             recalcUnderViewPropertiesIfOrientationChanged()
             
-        } else {
-            print("Rotated invisible")
         }
-        
     }
     
     func getStandartNavigationBarHeight() -> CGFloat {
@@ -129,6 +104,12 @@ class SecondViewController: UIViewController {
         
         if firstAppearance {
             firstAppearance = false
+            
+            if let underLabelText = underLabelText {
+                underLabel.text = underLabelText
+            }
+            
+            underView.layoutIfNeeded()
 
             let underViewHeight = underView.frame.height
             let standartNavigationBarHeight = getStandartNavigationBarHeight()
@@ -351,7 +332,7 @@ extension SecondViewController : UIScrollViewDelegate {
     fileprivate func recalcUnderviewHeightConstraint() {
         let navStatusHeight = getStandartNavigationBarHeight()
         
-        let yoffset = scrollView.contentOffset.y + navStatusHeight
+        let yoffset = scrollUnderView.contentOffset.y + navStatusHeight
         
         underviewHeightConstraint.constant = (yoffset >= 0.0) ? SecondViewController.underviewCollapsedHeight : abs(yoffset)
     }
@@ -368,40 +349,8 @@ extension SecondViewController : UIScrollViewDelegate {
         guard !SecondViewController.transitionIsOn else { return } // do not work at transition
         rewindScrollView(animated: true)
     }
-    
-    
-
 }
 
-extension SecondViewController : UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCell(withIdentifier: "TableCell\(cellColor[indexPath.row])")!
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
-    }
-    
-}
-
-
-extension SecondViewController : UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        let newVC = (storyboard.instantiateViewController(withIdentifier: "SecondVC") as! SecondViewController)
-        newVC.underLabelText = LoremIpsum.words(withNumber: Int(arc4random_uniform(15)) + 3)
-        self.navigationController?.pushViewController(newVC, animated: true)
-        
-        
-    }
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        return CGFloat(cellHeight[indexPath.row])
-    }
-}
 
 
 //-----
