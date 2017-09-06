@@ -63,9 +63,11 @@ class B32UnderViewController: UIViewController {
         installGestureRecognizer()
 
         createUnderView()
-        
-        underView.barTintColor = navigationController?.navigationBar.barTintColor
-        
+        if let navBar = navigationController?.navigationBar {
+            underView.barTintColor = navBar.barTintColor
+            underView.isTranslucent = navBar.isTranslucent
+        }
+
         NotificationCenter.default.addObserver(self, selector: #selector(didRotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
@@ -485,7 +487,10 @@ class B32UnderViewControllerAnimator : NSObject, UIViewControllerAnimatedTransit
             print("last transition to Standart \(collapsed ? "Collapsed" : ""), fromVCUnderview is small = \(fromVCUnderView.bounds.height == underviewCollapsedHeight)")
             
             toView.addSubview(transitionNavUnderView)
-            transitionNavUnderView.barTintColor = toVC.navigationController?.navigationBar.barTintColor
+            if let toNavBar = toVC.navigationController?.navigationBar {
+                transitionNavUnderView.barTintColor = toNavBar.barTintColor
+                transitionNavUnderView.isTranslucent = toNavBar.isTranslucent
+            }
             let transitionNavUnderViewHeightBefore = transitionNavUnderView.frame.size.height
             
             fromVCHeightConstraint!.constant = underviewCollapsedHeight
@@ -568,7 +573,10 @@ class B32UnderViewControllerAnimator : NSObject, UIViewControllerAnimatedTransit
                 
                 // toView preparation
                 toView.addSubview(transitionNavUnderView)
-                transitionNavUnderView.barTintColor = toVC.navigationController?.navigationBar.barTintColor
+                if let toNavBar = toVC.navigationController?.navigationBar {
+                    transitionNavUnderView.barTintColor = toNavBar.barTintColor
+                    transitionNavUnderView.isTranslucent = toNavBar.isTranslucent
+                }
                 
                 let labelSnapshot = toNavVCUnderLabel.snapshotView(afterScreenUpdates: true)!
                 labelSnapshot.frame = toNavVCUnderLabel.frame
@@ -635,7 +643,11 @@ class B32UnderViewControllerAnimator : NSObject, UIViewControllerAnimatedTransit
                 print("last transition #2, fromVCUnderview is small = \(fromVCUnderView.bounds.height == underviewCollapsedHeight)")
                 // fromView preparation
                 fromView.addSubview(transitionNavUnderView)
-                transitionNavUnderView.barTintColor = fromVC.navigationController?.navigationBar.barTintColor
+                if let fromNavBar = fromVC.navigationController?.navigationBar {
+                    transitionNavUnderView.barTintColor = fromNavBar.barTintColor
+                    transitionNavUnderView.isTranslucent = fromNavBar.isTranslucent
+                }
+                
                 let transitionNavUnderViewHeightBefore = transitionNavUnderView.bounds.size.height
                 
                 let labelSnapshot = fromVCUnderLabel.snapshotView(afterScreenUpdates: false)!
@@ -658,7 +670,11 @@ class B32UnderViewControllerAnimator : NSObject, UIViewControllerAnimatedTransit
                 anotherTransitionNavUnderView.frame = transitionNavUnderView.frame
                 anotherTransitionNavUnderView.layoutIfNeeded()
                 toView.addSubview(anotherTransitionNavUnderView)
-                anotherTransitionNavUnderView.barTintColor = toVC.navigationController?.navigationBar.barTintColor
+                if let toNavBar = toVC.navigationController?.navigationBar {
+                    anotherTransitionNavUnderView.barTintColor = toNavBar.barTintColor
+                    anotherTransitionNavUnderView.isTranslucent = toNavBar.isTranslucent
+                }
+                
                 let anotherTransitionNavUnderViewHeightBefore = anotherTransitionNavUnderView.bounds.size.height
                 
                 let labelSnapshot2 = toNavVCUnderLabel.snapshotView(afterScreenUpdates: true)!

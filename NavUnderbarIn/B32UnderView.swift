@@ -108,6 +108,16 @@ class B32UnderView: UIView {
         }
     }
     
+    var isTranslucent: Bool {
+        get {
+            return _navigationBar.isTranslucent
+        }
+        
+        set {
+            _navigationBar.isTranslucent = newValue
+        }
+    }
+    
     var underview: UIView {
         return _innerView
     }
