@@ -42,7 +42,7 @@ class B32UnderViewController: UIViewController {
     fileprivate var scrollViewInsetDefault: CGFloat!
     
     fileprivate var underLabel: UILabel? {
-        return (underView.underview as? UILabel)
+        return underView.underLabel
     }
     
     fileprivate var innerUnderview: UIView! {
@@ -83,10 +83,7 @@ class B32UnderViewController: UIViewController {
         if firstAppearance {
             firstAppearance = false
             
-            if let underLabelText = underLabelText, let uLabel = underLabel {
-                uLabel.text = underLabelText
-            }
-            
+            underView.underLabelText = underLabelText
             underView.layoutIfNeeded()
             
             let underViewHeight = underView.frame.height
@@ -295,7 +292,7 @@ extension B32UnderViewController : UIScrollViewDelegate {
     
     fileprivate func setTitleBarShown(_ shown: Bool, animated: Bool = true) {
 
-        navigationItem.title = underLabel?.text ?? navItemPlaceHolder
+        navigationItem.title = underView.underLabelText ?? navItemPlaceHolder
         
         if let label = navigationController?.navigationBar.getTitleLabel() {
             

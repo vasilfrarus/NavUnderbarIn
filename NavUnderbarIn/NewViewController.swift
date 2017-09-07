@@ -19,7 +19,7 @@ class NewViewController: B32UnderViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-//        underLabelText = "Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello world "
+//        underLabelText = " "
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -56,6 +56,12 @@ extension NewViewController : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let newVC = (storyboard.instantiateViewController(withIdentifier: arc4random_uniform(2) == 0 ? "SecondVC" : "NewController") as! B32UnderViewController)
+        if let _newVC = newVC as? NewViewController {
+            if(arc4random_uniform(2) == 0) {
+                _newVC.underLabelText = "Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello world"
+            }
+        }
+        
         self.navigationController?.pushViewController(newVC, animated: true)
     }
     

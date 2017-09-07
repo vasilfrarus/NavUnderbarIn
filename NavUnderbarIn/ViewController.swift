@@ -55,6 +55,11 @@ extension ViewController : UITableViewDelegate {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let newVC = (storyboard.instantiateViewController(withIdentifier: arc4random_uniform(2) == 0 ? "SecondVC" : "NewController") as! B32UnderViewController)
+        if let _newVC = newVC as? NewViewController {
+            if(arc4random_uniform(2) == 0) {
+                _newVC.underLabelText = "Hello world Hello world Hello world Hello world Hello world Hello world Hello world Hello world"
+            }
+        }
         self.navigationController?.pushViewController(newVC, animated: true)
         
     }

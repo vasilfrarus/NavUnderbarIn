@@ -17,6 +17,14 @@ class B32UnderView: UIView {
     
     private var _customView: UIView?
     
+    private let topLabelInset: CGFloat = 10.0
+    private let bottomLabelInset: CGFloat = 10.0
+    private let leftLabelInset: CGFloat = 30.0
+    private let rightLabelInset: CGFloat = 30.0
+    
+    private var labelTopConstraint: NSLayoutConstraint?
+    private var labelBottomConstraint: NSLayoutConstraint?
+    
     init(withCustomView view: UIView?) {
         super.init(frame: CGRect.zero)
         
@@ -68,18 +76,14 @@ class B32UnderView: UIView {
             _innerView = UILabel()
             addSubview(_innerView)
 
-            let topLabelInset: CGFloat = 10.0
-            let bottomLabelInset: CGFloat = topLabelInset
-            let leftLabelInset: CGFloat = 30.0
-            let rightLabelInset: CGFloat = leftLabelInset
-            
             _innerView.translatesAutoresizingMaskIntoConstraints = false
-            let topConstraint = _innerView.topAnchor.constraint(equalTo: topAnchor, constant: topLabelInset)
-            topConstraint.priority = 1
-            topConstraint.isActive = true
+            
+            labelTopConstraint = _innerView.topAnchor.constraint(equalTo: topAnchor, constant: topLabelInset)
+            labelTopConstraint!.priority = 1
+            labelTopConstraint!.isActive = true
 
-            let bottomConstraint = _innerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -1.0*bottomLabelInset)
-            bottomConstraint.isActive = true
+            labelBottomConstraint = _innerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -1.0*bottomLabelInset)
+            labelBottomConstraint!.isActive = true
             
             _innerView.leftAnchor.constraint(equalTo: leftAnchor, constant: leftLabelInset).isActive = true
             _innerView.rightAnchor.constraint(equalTo: rightAnchor, constant: -1.0*rightLabelInset).isActive = true
@@ -96,6 +100,8 @@ class B32UnderView: UIView {
         _lineView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         _lineView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
         _lineView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+        
+        heightAnchor.constraint(greaterThanOrEqualToConstant: B32UnderView.bottomLineHeight).isActive = true
     }
     
     var barTintColor: UIColor? {
@@ -121,7 +127,26 @@ class B32UnderView: UIView {
     var underview: UIView {
         return _innerView
     }
+
+    var underLabel: UILabel? {
+        return (_innerView as? UILabel)
+    }
     
+    var underLabelText: String? {
+        set {
+            underLabel?.text = newValue
+            
+            let textNotNull = !(newValue == nil)
+            
+            labelTopConstraint?.constant = textNotNull ? topLabelInset : 0.0
+            labelBottomConstraint?.constant = textNotNull ? -1.0 * bottomLabelInset : 0.0
+            underLabel?.superview?.layoutIfNeeded()
+        }
+        
+        get {
+            return underLabel?.text
+        }
+    }
     
     
 }
