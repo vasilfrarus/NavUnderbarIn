@@ -41,6 +41,14 @@ class B32UnderViewController: UIViewController {
     fileprivate var underviewHeightDefault: CGFloat!
     fileprivate var scrollViewInsetDefault: CGFloat!
     
+    var underviewDefaultHeight: CGFloat {
+        return underviewHeightDefault!
+    }
+    
+    var scrollViewDefaultInset: CGFloat {
+        return scrollViewInsetDefault!
+    }
+    
     fileprivate var underLabel: UILabel? {
         return underView.underLabel
     }
@@ -64,8 +72,7 @@ class B32UnderViewController: UIViewController {
 
         createUnderView()
         if let navBar = navigationController?.navigationBar {
-            underView.barTintColor = navBar.barTintColor
-            underView.isTranslucent = navBar.isTranslucent
+            underView.setBarEqualentTo(navBar)
         }
 
         NotificationCenter.default.addObserver(self, selector: #selector(didRotated), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
@@ -485,8 +492,7 @@ class B32UnderViewControllerAnimator : NSObject, UIViewControllerAnimatedTransit
             
             toView.addSubview(transitionNavUnderView)
             if let toNavBar = toVC.navigationController?.navigationBar {
-                transitionNavUnderView.barTintColor = toNavBar.barTintColor
-                transitionNavUnderView.isTranslucent = toNavBar.isTranslucent
+                transitionNavUnderView.setBarEqualentTo(toNavBar)
             }
             let transitionNavUnderViewHeightBefore = transitionNavUnderView.frame.size.height
             
@@ -571,8 +577,7 @@ class B32UnderViewControllerAnimator : NSObject, UIViewControllerAnimatedTransit
                 // toView preparation
                 toView.addSubview(transitionNavUnderView)
                 if let toNavBar = toVC.navigationController?.navigationBar {
-                    transitionNavUnderView.barTintColor = toNavBar.barTintColor
-                    transitionNavUnderView.isTranslucent = toNavBar.isTranslucent
+                    transitionNavUnderView.setBarEqualentTo(toNavBar)
                 }
                 
                 let labelSnapshot = toNavVCUnderLabel.snapshotView(afterScreenUpdates: true)!
@@ -641,8 +646,7 @@ class B32UnderViewControllerAnimator : NSObject, UIViewControllerAnimatedTransit
                 // fromView preparation
                 fromView.addSubview(transitionNavUnderView)
                 if let fromNavBar = fromVC.navigationController?.navigationBar {
-                    transitionNavUnderView.barTintColor = fromNavBar.barTintColor
-                    transitionNavUnderView.isTranslucent = fromNavBar.isTranslucent
+                    transitionNavUnderView.setBarEqualentTo(fromNavBar)
                 }
                 
                 let transitionNavUnderViewHeightBefore = transitionNavUnderView.bounds.size.height
@@ -668,8 +672,7 @@ class B32UnderViewControllerAnimator : NSObject, UIViewControllerAnimatedTransit
                 anotherTransitionNavUnderView.layoutIfNeeded()
                 toView.addSubview(anotherTransitionNavUnderView)
                 if let toNavBar = toVC.navigationController?.navigationBar {
-                    anotherTransitionNavUnderView.barTintColor = toNavBar.barTintColor
-                    anotherTransitionNavUnderView.isTranslucent = toNavBar.isTranslucent
+                    anotherTransitionNavUnderView.setBarEqualentTo(toNavBar)
                 }
                 
                 let anotherTransitionNavUnderViewHeightBefore = anotherTransitionNavUnderView.bounds.size.height

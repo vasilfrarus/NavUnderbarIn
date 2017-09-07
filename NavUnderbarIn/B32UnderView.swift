@@ -124,6 +124,16 @@ class B32UnderView: UIView {
         }
     }
     
+    func setBarEqualentTo(_ bar: UINavigationBar) {
+        
+        _navigationBar.barTintColor = bar.barTintColor
+        _navigationBar.isTranslucent = bar.isTranslucent
+        _navigationBar.shadowImage = bar.shadowImage
+        _navigationBar.setBackgroundImage(bar.backgroundImage(for: .default), for: .default)
+        
+//        _navigationBar. = bar.
+    }
+    
     var underview: UIView {
         return _innerView
     }
